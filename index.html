@@ -1,0 +1,224 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="theme-color" content="#0b1220">
+    <title>AeroAQI | Air Quality Explorer</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <header class="topbar">
+        <a class="brand" href="#">
+            <span class="brand-icon">☁</span>
+            <span>Aero<span class="accent">AQI</span></span>
+        </a>
+
+        <div class="header-actions">
+            <span class="live-status">
+                <span class="live-dot"></span> Live data
+            </span>
+            <button id="themeBtn" class="icon-btn" type="button"
+                aria-label="Toggle dark mode" title="Toggle dark mode">☾</button>
+        </div>
+    </header>
+
+    <main class="container">
+        <section class="hero">
+            <p class="eyebrow">AIR QUALITY MONITOR</p>
+            <h1>Breathe smarter.<br><span class="accent">Live healthier.</span></h1>
+            <p class="hero-text">
+                Explore real-time air pollution levels and understand the air around you.
+            </p>
+
+            <form id="searchForm" class="search-form">
+                <span class="search-icon">⌕</span>
+                <input
+                    id="cityInput"
+                    type="search"
+                    placeholder="Enter a city, e.g. Kolkata"
+                    aria-label="Search for a city"
+                    value="Kolkata"
+                    required
+                >
+                <button id="searchBtn" type="submit">Search</button>
+            </form>
+
+            <p class="search-hint">Try Kolkata, Delhi, London or New York.</p>
+        </section>
+
+        <div id="message" class="message" role="status" aria-live="polite">
+            Loading air-quality data...
+        </div>
+
+        <section id="dashboard" class="dashboard" hidden>
+            <div class="location-heading">
+                <div>
+                    <p class="section-label">YOUR SELECTED LOCATION</p>
+                    <h2 id="locationName">Kolkata, India</h2>
+                    <p id="locationDetails" class="muted">Loading location details...</p>
+                </div>
+                <button id="refreshBtn" class="secondary-btn" type="button">
+                    ↻ Refresh
+                </button>
+            </div>
+
+            <div class="overview-grid">
+                <article class="panel aqi-panel">
+                    <div class="panel-heading">
+                        <div>
+                            <p class="section-label">AIR QUALITY INDEX</p>
+                            <h3>Current air quality</h3>
+                        </div>
+                        <span id="aqiBadge" class="aqi-badge">Loading</span>
+                    </div>
+
+                    <div class="aqi-content">
+                        <div id="aqiGauge" class="aqi-gauge" style="--gauge-angle: 0deg">
+                            <div class="gauge-inner">
+                                <span id="aqiValue" class="aqi-number">--</span>
+                                <span class="gauge-caption">US AQI</span>
+                            </div>
+                        </div>
+
+                        <div class="aqi-summary">
+                            <h3 id="aqiTitle">Checking air quality</h3>
+                            <p id="aqiDescription">
+                                Please wait while the latest data is retrieved.
+                            </p>
+                            <p id="updatedAt" class="updated-text"></p>
+                        </div>
+                    </div>
+                    <p class="source-note">
+                        AQI is an estimate calculated from the available pollution data.
+                    </p>
+                </article>
+
+                <article class="panel health-panel">
+                    <p class="section-label">HEALTH INSIGHT</p>
+                    <div class="health-icon" id="healthIcon">🌿</div>
+                    <h3 id="healthTitle">Your health guide</h3>
+                    <p id="healthAdvice">
+                        Air-quality guidance will appear here after the data loads.
+                    </p>
+                    <div class="health-tip">
+                        <strong>Helpful tip</strong>
+                        <p id="healthTip">Check local conditions before outdoor activities.</p>
+                    </div>
+                </article>
+            </div>
+
+            <section class="pollutants-section">
+                <div class="section-heading">
+                    <div>
+                        <p class="section-label">POLLUTION BREAKDOWN</p>
+                        <h2>Pollutant levels</h2>
+                    </div>
+                    <span class="unit-label">Concentration: µg/m³*</span>
+                </div>
+
+                <div class="pollutant-grid">
+                    <article class="pollutant-card">
+                        <div class="pollutant-top">
+                            <span class="pollutant-symbol purple">PM</span>
+                            <span class="pollutant-name">PM2.5</span>
+                        </div>
+                        <p id="pm25Value" class="pollutant-value">--</p>
+                        <p class="pollutant-description">Fine particles</p>
+                        <div class="progress-track">
+                            <div id="pm25Bar" class="progress-fill purple-fill"></div>
+                        </div>
+                    </article>
+
+                    <article class="pollutant-card">
+                        <div class="pollutant-top">
+                            <span class="pollutant-symbol blue">PM</span>
+                            <span class="pollutant-name">PM10</span>
+                        </div>
+                        <p id="pm10Value" class="pollutant-value">--</p>
+                        <p class="pollutant-description">Coarse particles</p>
+                        <div class="progress-track">
+                            <div id="pm10Bar" class="progress-fill blue-fill"></div>
+                        </div>
+                    </article>
+
+                    <article class="pollutant-card">
+                        <div class="pollutant-top">
+                            <span class="pollutant-symbol orange">NO₂</span>
+                            <span class="pollutant-name">Nitrogen dioxide</span>
+                        </div>
+                        <p id="no2Value" class="pollutant-value">--</p>
+                        <p class="pollutant-description">Traffic-related gas</p>
+                        <div class="progress-track">
+                            <div id="no2Bar" class="progress-fill orange-fill"></div>
+                        </div>
+                    </article>
+
+                    <article class="pollutant-card">
+                        <div class="pollutant-top">
+                            <span class="pollutant-symbol green">O₃</span>
+                            <span class="pollutant-name">Ozone</span>
+                        </div>
+                        <p id="o3Value" class="pollutant-value">--</p>
+                        <p class="pollutant-description">Ground-level ozone</p>
+                        <div class="progress-track">
+                            <div id="o3Bar" class="progress-fill green-fill"></div>
+                        </div>
+                    </article>
+
+                    <article class="pollutant-card">
+                        <div class="pollutant-top">
+                            <span class="pollutant-symbol red">CO</span>
+                            <span class="pollutant-name">Carbon monoxide</span>
+                        </div>
+                        <p id="coValue" class="pollutant-value">--</p>
+                        <p class="pollutant-description">Combustion gas</p>
+                        <div class="progress-track">
+                            <div id="coBar" class="progress-fill red-fill"></div>
+                        </div>
+                    </article>
+
+                    <article class="pollutant-card">
+                        <div class="pollutant-top">
+                            <span class="pollutant-symbol teal">SO₂</span>
+                            <span class="pollutant-name">Sulphur dioxide</span>
+                        </div>
+                        <p id="so2Value" class="pollutant-value">--</p>
+                        <p class="pollutant-description">Sulphur-containing gas</p>
+                        <div class="progress-track">
+                            <div id="so2Bar" class="progress-fill teal-fill"></div>
+                        </div>
+                    </article>
+                </div>
+
+                <p class="footnote">
+                    *Values are approximate current concentrations reported by the data provider.
+                    Carbon monoxide is converted from µg/m³ to mg/m³ for display.
+                    Progress bars are for visual comparison, not official pollutant limits.
+                </p>
+            </section>
+
+            <section class="panel about-panel">
+                <div class="about-icon">ℹ</div>
+                <div>
+                    <h3>Understanding your AQI</h3>
+                    <p>
+                        The US AQI scale ranges from 0 to 500. Lower values generally
+                        indicate cleaner air. Higher values mean greater potential
+                        health concerns. AQI categories and advice are general guidance,
+                        not a medical diagnosis.
+                    </p>
+                </div>
+            </section>
+        </section>
+
+        <footer class="footer">
+            <p>© 2026 AeroAQI · Built for a cleaner, more informed world.</p>
+            <p>Air-quality data: Open-Meteo · Weather and air quality can change quickly.</p>
+        </footer>
+    </main>
+
+    <script src="script.js"></script>
+</body>
+</html>
